@@ -1,0 +1,1 @@
+HEK293T and A549 cells were maintained in Dulbecco's modified Eagle medium (DMEM) with Glutamax (Gibco), supplemented with 10% fetal calf serum and 50 ng/ml gentamicin (Sigma-Aldrich). Transient DNA transfections for immunoprecipitations and pulldowns were performed using the calcium phosphate method. The total amount of DNA was kept constant by addition of empty vector.

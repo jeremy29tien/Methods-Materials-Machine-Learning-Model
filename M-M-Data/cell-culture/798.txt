@@ -1,0 +1,1 @@
+Human embryonic kidney 293 T (HEK293T) cells, HeLa cells, and COS-7 cells were maintained in Dulbecco's modified Eagle's medium supplemented with 10% fetal bovine serum (FBS) as described previously (28). Cells were transfected by the use of Lipofectamine 2000 reagent (Invitrogen), following the manufacturer's instructions.

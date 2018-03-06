@@ -1,0 +1,1 @@
+CD8 T cells and CD4 T cells were purified from spleen and lymph nodes by negative selection, as previously described (25, 26), and by positive selection using the MACS system, as recommended by the manufacturer (Miltenyi). MCF7 and MCF7/siMCJ cell lines were maintained as previously described (23). Rotenone (used at 10 μM) was purchased from Sigma.
