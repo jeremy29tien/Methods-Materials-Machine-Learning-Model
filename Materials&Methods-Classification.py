@@ -3,7 +3,21 @@
 """
 Created on Sun Mar  4 00:37:03 2018
 
-Training and testing data obtainted from Molecular and Cellular Biology PMC Collection at https://www.ncbi.nlm.nih.gov/pmc/journals/91/
+Loads preprocessed Materials & Methods (M&M) data, converting them to network-ready form (integers).
+Creates a Long Short-Term Memory recurrent neural network.
+Implements a word embedding layer, a convolutional neural network layer, and gate-specific dropout in LSTM.
+Trains the neural network on training data comprised of cell-culture and cell-imaging M&M sections.
+Evaluates network on testing data, achieving 96% accuracy. 
+Saves network for application in Trained-Classifier.py
+
+Training and testing data obtained from Molecular and Cellular Biology PMC Collection at https://www.ncbi.nlm.nih.gov/pmc/journals/91/
+
+Sites referenced:
+    https://keras.io/models/sequential/
+    http://web.stanford.edu/class/cs224n/index.html
+    https://machinelearningmastery.com/sequence-classification-lstm-recurrent-neural-networks-python-keras/
+    https://machinelearningmastery.com/make-predictions-long-short-term-memory-models-keras/
+    https://machinelearningmastery.com/how-to-develop-a-word-level-neural-language-model-in-keras/
 
 @author: JeremyTien
 """
