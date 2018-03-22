@@ -77,16 +77,16 @@ in_sequence = tokenizer.texts_to_sequences(x_in)
 # truncate and pad input sequences
 max_section_length = 500
 in_sequence = sequence.pad_sequences(in_sequence, maxlen=max_section_length)
-print(doc)
-print(x_in)
-print(in_sequence)
+#print(doc)
+#print(x_in)
+#print(in_sequence)
 
 #make prediction on tokenized sequence (on integers)
-prediction = loaded_model.predict_classes(in_sequence, verbose=0)
+prediction = loaded_model.predict_classes(in_sequence, verbose=0) #0
 print(prediction)
 #convert prediction back to label - 0 for cell-culture, 1 for cell-imaging
 if prediction == 0:
     method_material_type = 'cell-culture'
 else:
     method_material_type = 'cell-imaging'
-print('The input Methods and Materials section is classified as: ' + method_material_type)
+print('\nThe input Methods and Materials section is classified as: ' + method_material_type)

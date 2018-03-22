@@ -18,6 +18,7 @@ Sites referenced:
     https://machinelearningmastery.com/sequence-classification-lstm-recurrent-neural-networks-python-keras/
     https://machinelearningmastery.com/make-predictions-long-short-term-memory-models-keras/
     https://machinelearningmastery.com/how-to-develop-a-word-level-neural-language-model-in-keras/
+    https://machinelearningmastery.com/display-deep-learning-model-training-history-in-keras/
 
 @author: JeremyTien
 """
@@ -25,8 +26,10 @@ Sites referenced:
 import numpy
 import os
 import tensorflow as tf
+import matplotlib.pyplot as plt
 from numpy import array
 from pickle import dump
+from pandas import DataFrame
 from keras.preprocessing.text import Tokenizer
 from keras.models import Sequential
 from keras.layers import Dense
@@ -90,24 +93,82 @@ max_section_length = 500
 x_train_sequences = sequence.pad_sequences(x_train_sequences, maxlen=max_section_length)
 x_test_sequences = sequence.pad_sequences(x_test_sequences, maxlen=max_section_length)
 
-# create the model
-embedding_vector_length = 32 # experiment with embedding size later for optimal results
-model = Sequential()
-model.add(Embedding(vocab_size, embedding_vector_length, input_length=max_section_length))
-model.add(Conv1D(filters=32, kernel_size=3, padding='same', activation='relu')) # add convolutional neural net for 1D spatial structure in sentences
-model.add(MaxPooling1D(pool_size=2))
-model.add(LSTM(100, dropout=0.2, recurrent_dropout=0.2)) # input dropout and recurrent dropout to prevent overfitting
-model.add(Dense(1, activation='sigmoid'))
-print(model.summary())
+# collect data across multiple repeats
+trainAcc = DataFrame()
+valAcc = DataFrame()
+trainLoss = DataFrame()
+valLoss = DataFrame()
 
-#compile model -- for nonbinary classification, use loss = 'categorical_crossentropy'
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy']) # API Documentation at https://keras.io/models/sequential/
-#fit model
-model.fit(x_train_sequences, y_train, validation_data=(x_test_sequences, y_test), epochs=10, batch_size=64) # can increase number of epochs to achieve better accuracy
+for i in range(10):
+    # create the model
+    embedding_vector_length = 32 # experiment with embedding size later for optimal results
+    model = Sequential()
+    model.add(Embedding(vocab_size, embedding_vector_length, input_length=max_section_length))
+    model.add(Conv1D(filters=32, kernel_size=3, padding='same', activation='relu')) # add convolutional neural net for 1D spatial structure in sentences
+    model.add(MaxPooling1D(pool_size=2))
+    model.add(LSTM(100, dropout=0.2, recurrent_dropout=0.2)) # input dropout and recurrent dropout to prevent overfitting
+    model.add(Dense(1, activation='sigmoid'))
+    print(model.summary())
+    
+    #compile model -- for nonbinary classification, use loss = 'categorical_crossentropy'
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy']) # API Documentation at https://keras.io/models/sequential/
+    #fit model
+    history = model.fit(x_train_sequences, y_train, validation_data=(x_test_sequences, y_test), epochs=10, batch_size=64) # can increase number of epochs to achieve better accuracy
+    
+    # evaluation of the trained model
+    scores = model.evaluate(x_test_sequences, y_test, verbose=0)
+    print("Accuracy: %.2f%%" % (scores[1]*100))
+    
+    # store history
+    trainAcc[str(i)] = history.history['acc']
+    valAcc[str(i)] = history.history['val_acc']
+    trainLoss[str(i)] = history.history['loss']
+    valLoss[str(i)] = history.history['val_loss']
+"""
+# list all data in history
+print(history.history.keys())
+# summarize history for accuracy
+plt.figure(figsize=(16,12))
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.savefig('accuracy.png', bbox_inches='tight')
+plt.show()
+# summarize history for loss
+plt.figure(figsize=(16,12))
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.savefig('loss.png', bbox_inches='tight')
+plt.show()
+"""
+# plot train and validation accuracy across multiple runs
+plt.figure(figsize=(16,12))
+plt.plot(trainAcc, color='blue', label='train')
+plt.plot(valAcc, color='orange', label='test')
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.savefig('accuracyMultiRun.png', bbox_inches='tight')
+plt.show()
 
-# evaluation of the trained model
-scores = model.evaluate(x_test_sequences, y_test, verbose=0)
-print("Accuracy: %.2f%%" % (scores[1]*100))
+# plot train and validation loss across multiple runs
+plt.figure(figsize=(16,12))
+plt.plot(trainLoss, color='blue', label='train')
+plt.plot(valLoss, color='orange', label='test')
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.savefig('lossMultiRun.png', bbox_inches='tight')
+plt.show()
 
 # serialize model to JSON
 model_json = model.to_json()
